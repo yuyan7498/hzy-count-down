@@ -115,6 +115,30 @@
             background: rgba(139, 115, 85, 0.2);
         }
 
+        .next-milestone {
+            background: rgba(93, 64, 55, 0.1);
+            border-left: 4px solid #ff9800;
+            position: relative;
+        }
+
+        .next-milestone::after {
+            content: "下個紀念日";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #ff9800;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+        }
+
+        .milestone-countdown {
+            color: #ff5722;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 0.5rem;
@@ -207,6 +231,36 @@
             document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
             document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
             document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+            // 更新最近紀念日的倒數
+            updateNextMilestoneCountdown();
+        }
+
+        function formatCountdown(difference) {
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            
+            return `倒數：${days}天 ${hours}時 ${minutes}分 ${seconds}秒`;
+        }
+
+        function updateNextMilestoneCountdown() {
+            const nextMilestone = document.querySelector('.next-milestone');
+            if (nextMilestone) {
+                const countdownSpan = nextMilestone.querySelector('.milestone-countdown');
+                const milestoneDate = new Date(nextMilestone.dataset.date);
+                const now = new Date();
+                const difference = milestoneDate - now;
+                
+                if (difference > 0) {
+                    countdownSpan.textContent = formatCountdown(difference);
+                } else {
+                    countdownSpan.textContent = '已經到了！';
+                    // 如果這個里程碑已經過期，重新整理里程碑列表
+                    calculateMilestones();
+                }
+            }
         }
 
         function calculateMilestones() {
@@ -216,30 +270,50 @@
             const milestonesDiv = document.getElementById('milestones');
             
             const allMilestones = [...milestones, ...yearlyMilestones].sort((a, b) => a - b);
+            const now = new Date();
+            let nextMilestoneFound = false;
             
+            // 清空現有的里程碑
+            milestonesDiv.innerHTML = '';
+            
+            // 只顯示未來的里程碑
             allMilestones.forEach(days => {
                 const milestoneDate = new Date(startDate.getTime() + days * 24 * 60 * 60 * 1000);
-                const formattedDate = milestoneDate.toLocaleString('zh-TW', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    weekday: 'long'
-                });
                 
-                const milestone = document.createElement('div');
-                milestone.className = 'milestone-item';
-                
-                if (days % 365 === 0) {
-                    milestone.className += ' yearly-milestone';
-                    const years = days / 365;
-                    milestone.textContent = `${years}週年（${days}天）：${formattedDate}`;
-                } else {
-                    milestone.textContent = `${days}天：${formattedDate}`;
+                // 只有當里程碑日期在現在之後才顯示
+                if (milestoneDate > now) {
+                    const formattedDate = milestoneDate.toLocaleString('zh-TW', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        weekday: 'long'
+                    });
+                    
+                    const milestone = document.createElement('div');
+                    milestone.className = 'milestone-item';
+                    milestone.dataset.date = milestoneDate;
+                    
+                    let content = '';
+                    if (days % 365 === 0) {
+                        milestone.className += ' yearly-milestone';
+                        const years = days / 365;
+                        content = `${years}週年（${days}天）：${formattedDate}`;
+                    } else {
+                        content = `${days}天：${formattedDate}`;
+                    }
+                    
+                    // 標記最近的未來紀念日
+                    if (!nextMilestoneFound) {
+                        milestone.className += ' next-milestone';
+                        content += `<div class="milestone-countdown"></div>`;
+                        nextMilestoneFound = true;
+                    }
+                    
+                    milestone.innerHTML = content;
+                    milestonesDiv.appendChild(milestone);
                 }
-                
-                milestonesDiv.appendChild(milestone);
             });
         }
 
