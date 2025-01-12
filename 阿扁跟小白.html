@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黃子芸跟江俊諺在一起紀念日</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #ffffff, #d4c4b7, #8b7355);
+            background-attachment: fixed;
+            color: #4a3728;
+            font-family: Arial, sans-serif;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .countdown-container {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+            width: 100%;
+            padding: 0 1rem;
+        }
+
+        .countdown-item {
+            text-align: center;
+        }
+
+        .number {
+            font-size: 5rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            min-width: 120px;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            color: #5d4037;
+            transition: transform 0.2s;
+        }
+
+        .number:hover {
+            transform: translateY(-5px);
+        }
+
+        .label {
+            font-size: 1.5rem;
+            margin-top: 0.5rem;
+            font-weight: bold;
+            color: #3e2723;
+            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+        }
+
+        .milestone-list {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow-x: hidden;
+        }
+
+        .milestone-list h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #3e2723;
+            font-size: 2rem;
+            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+        }
+
+        .milestone-item {
+            margin-bottom: 1rem;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            border-left: 4px solid #8d6e63;
+            transition: transform 0.2s;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .milestone-item:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .yearly-milestone {
+            background: rgba(139, 115, 85, 0.1);
+            border-left: 4px solid #5d4037;
+            color: #3e2723;
+            font-weight: bold;
+        }
+
+        .yearly-milestone:hover {
+            background: rgba(139, 115, 85, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin: 1rem 0;
+            }
+
+            .countdown-container {
+                gap: 0.5rem;
+                padding: 0;
+            }
+
+            .number {
+                font-size: 2rem;
+                min-width: 60px;
+                padding: 0.5rem;
+            }
+
+            .label {
+                font-size: 1rem;
+            }
+
+            .milestone-list {
+                padding: 1rem;
+                border-radius: 15px;
+            }
+
+            .milestone-list h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .milestone-item {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .countdown-container {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>黃子芸跟江俊諺已經在一起：</h1>
+    <div class="countdown-container">
+        <div class="countdown-item">
+            <div class="number" id="days">00</div>
+            <div class="label">天</div>
+        </div>
+        <div class="countdown-item">
+            <div class="number" id="hours">00</div>
+            <div class="label">時</div>
+        </div>
+        <div class="countdown-item">
+            <div class="number" id="minutes">00</div>
+            <div class="label">分</div>
+        </div>
+        <div class="countdown-item">
+            <div class="number" id="seconds">00</div>
+            <div class="label">秒</div>
+        </div>
+    </div>
+
+    <div class="milestone-list">
+        <h2>紀念日</h2>
+        <div id="milestones"></div>
+    </div>
+
+    <script>
+        function updateTimer() {
+            const startDate = new Date('2024-10-06T13:00:00');
+            const now = new Date();
+            const difference = now - startDate;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+
+        function calculateMilestones() {
+            const startDate = new Date('2024-10-06T13:00:00');
+            const milestones = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+            const yearlyMilestones = Array.from({length: 10}, (_, i) => (i + 1) * 365);
+            const milestonesDiv = document.getElementById('milestones');
+            
+            const allMilestones = [...milestones, ...yearlyMilestones].sort((a, b) => a - b);
+            
+            allMilestones.forEach(days => {
+                const milestoneDate = new Date(startDate.getTime() + days * 24 * 60 * 60 * 1000);
+                const formattedDate = milestoneDate.toLocaleString('zh-TW', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    weekday: 'long'
+                });
+                
+                const milestone = document.createElement('div');
+                milestone.className = 'milestone-item';
+                
+                if (days % 365 === 0) {
+                    milestone.className += ' yearly-milestone';
+                    const years = days / 365;
+                    milestone.textContent = `${years}週年（${days}天）：${formattedDate}`;
+                } else {
+                    milestone.textContent = `${days}天：${formattedDate}`;
+                }
+                
+                milestonesDiv.appendChild(milestone);
+            });
+        }
+
+        // 初始化
+        calculateMilestones();
+        updateTimer();
+        // 每秒更新計時器
+        setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>
