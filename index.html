@@ -23,6 +23,68 @@
             box-sizing: border-box;
         }
 
+        .avatar-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 2rem;
+            position: relative;
+            padding: 1rem;
+        }
+
+        .avatar-wrapper {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            border-radius: 50%;
+            background: white;
+            padding: 5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .avatar-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .heart-container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .heart {
+            color: #ff6b6b;
+            font-size: 30px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+
         h1 {
             font-size: 2.5rem;
             margin-bottom: 2rem;
@@ -140,6 +202,20 @@
         }
 
         @media (max-width: 768px) {
+            .avatar-wrapper {
+                width: 80px;
+                height: 80px;
+            }
+
+            .heart-container {
+                width: 40px;
+                height: 40px;
+            }
+
+            .heart {
+                font-size: 20px;
+            }
+
             body {
                 padding: 0.5rem;
             }
@@ -192,6 +268,17 @@
 </head>
 <body>
     <h1>黃子芸跟江俊諺已經在一起：</h1>
+    <div class="avatar-container">
+        <div class="avatar-wrapper">
+            <img src="./IMG_4077.jpg" alt="子芸" class="avatar" id="avatar1">
+        </div>
+        <div class="heart-container">
+            <div class="heart">❤️</div>
+        </div>
+        <div class="avatar-wrapper">
+            <img src="./IMG_4078.jpg" alt="俊諺" class="avatar" id="avatar2">
+        </div>
+    </div>
     <div class="countdown-container">
         <div class="countdown-item">
             <div class="number" id="days">00</div>
@@ -212,7 +299,7 @@
     </div>
 
     <div class="milestone-list">
-        <h2>紀念日</h2>
+        <h2>未來紀念日</h2>
         <div id="milestones"></div>
     </div>
 
@@ -232,7 +319,6 @@
             document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
             document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
 
-            // 更新最近紀念日的倒數
             updateNextMilestoneCountdown();
         }
 
@@ -257,7 +343,6 @@
                     countdownSpan.textContent = formatCountdown(difference);
                 } else {
                     countdownSpan.textContent = '已經到了！';
-                    // 如果這個里程碑已經過期，重新整理里程碑列表
                     calculateMilestones();
                 }
             }
@@ -273,14 +358,11 @@
             const now = new Date();
             let nextMilestoneFound = false;
             
-            // 清空現有的里程碑
             milestonesDiv.innerHTML = '';
             
-            // 只顯示未來的里程碑
             allMilestones.forEach(days => {
                 const milestoneDate = new Date(startDate.getTime() + days * 24 * 60 * 60 * 1000);
                 
-                // 只有當里程碑日期在現在之後才顯示
                 if (milestoneDate > now) {
                     const formattedDate = milestoneDate.toLocaleString('zh-TW', {
                         year: 'numeric',
@@ -304,7 +386,6 @@
                         content = `${days}天：${formattedDate}`;
                     }
                     
-                    // 標記最近的未來紀念日
                     if (!nextMilestoneFound) {
                         milestone.className += ' next-milestone';
                         content += `<div class="milestone-countdown"></div>`;
